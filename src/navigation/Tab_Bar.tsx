@@ -1,10 +1,8 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {Home, Meal, Profile, Shopping} from '../screens';
-import {
-  CustomTabBarButton,
-  TabBarIcon,
-} from '../components/Custom_TabBar_Button';
+import {Text, View} from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 const Tab = createBottomTabNavigator();
 
@@ -12,10 +10,7 @@ const TabBar = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarButton: props => (
-          <CustomTabBarButton {...props} onPress={() => {}} />
-        ),
-        tabBarIcon: ({focused}) => {
+        tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -29,13 +24,26 @@ const TabBar = () => {
           }
 
           return (
-            <TabBarIcon
-              iconName={iconName || ''}
-              focused={focused}
-              label={route.name}
-            />
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <FontAwesome6
+                name={iconName ?? ''}
+                size={24}
+                color={focused ? '#50C878' : '#E4EDE7'}
+                solid
+              />
+
+              <Text
+                style={{
+                  color: focused ? '#50C878' : '#99A69D',
+                  marginLeft: 8,
+                  fontSize: 14,
+                }}>
+                {route.name}
+              </Text>
+            </View>
           );
         },
+
         tabBarActiveTintColor: '#50C878',
         tabBarInactiveTintColor: '#E4EDE7',
         tabBarShowLabel: false,

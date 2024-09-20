@@ -46,7 +46,7 @@ const Home = () => {
           desc={'of 7 glass'}
         />
 
-        <Text style={[styles.titleText, {fontSize: height * 0.0305}]}>
+        <Text style={[styles.titleText, {fontSize: height * 0.0305, marginTop: '10%'}]}>
           Activity
         </Text>
 

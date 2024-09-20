@@ -1,5 +1,6 @@
 import {Image, StyleSheet, Text, View, useWindowDimensions} from 'react-native';
 import React from 'react';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 type detailsProps = {
   image: number;
@@ -11,6 +12,7 @@ const Detail: React.FC<detailsProps> = ({image, mainText, subText, desc}) => {
   const {height, width} = useWindowDimensions();
 
   const isWeight = mainText === 'Weight';
+  const isGlass = subText === 'Glass';
 
   return (
     <View
@@ -30,9 +32,9 @@ const Detail: React.FC<detailsProps> = ({image, mainText, subText, desc}) => {
             justifyContent: 'center',
           },
         ]}>
-        <Text style={[styles.mainText,
-          isWeight && {fontSize: 20},
-        ]}>{mainText}</Text>
+        <Text style={[styles.mainText, isWeight && {fontSize: 20}]}>
+          {mainText}
+        </Text>
         <Text
           style={[
             styles.subText,
@@ -46,6 +48,26 @@ const Detail: React.FC<detailsProps> = ({image, mainText, subText, desc}) => {
           {desc}
         </Text>
       </View>
+
+      {isGlass && (
+        <>
+          <View style={styles.glassView}>
+            <FontAwesome6 name="gear" size={20} color="#99A69D" solid />
+            <Text style={styles.descText}>Measure Method</Text>
+          </View>
+
+          <View style={styles.bigCircle}>
+            <View style={[styles.circlesView, {backgroundColor: '#dcf4e4'}]}>
+              <FontAwesome6 name="plus" size={20} color="green" solid />
+            </View>
+          </View>
+          <View style={styles.smallCircle}>
+            <View style={[styles.circlesView, {backgroundColor: '#fbdddd'}]}>
+              <FontAwesome6 name="minus" size={16} color="red" solid />
+            </View>
+          </View>
+        </>
+      )}
     </View>
   );
 };
@@ -61,8 +83,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 30,
     marginVertical: '3%',
-    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#E4EDE7',
     paddingHorizontal: '3%',
+    position: 'relative',
   },
 
   imageView: {
@@ -96,5 +120,63 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Ubuntu-SemiBold',
     color: '#99A69D',
+  },
+
+  glassView: {
+    height: '20%',
+    width: '50%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: -20,
+    left: '40%',
+    transform: [{translateX: -50}],
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderBottomWidth: 1,
+    borderColor: '#E4EDE7',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+  },
+  circlesView: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    height: '80%',
+    width: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 100,
+  },
+
+  bigCircle: {
+    position: 'absolute',
+    bottom: -35,
+    right: 10,
+    alignItems: 'center',
+    width: 60,
+    height: 60,
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    borderColor: '#E4EDE7',
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+  },
+
+  smallCircle: {
+    position: 'absolute',
+    bottom: -30,
+    right: 65,
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    borderBottomWidth: 1,
+    borderColor: '#E4EDE7',
+    borderLeftWidth: 1,
   },
 });
