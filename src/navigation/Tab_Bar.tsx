@@ -12,7 +12,9 @@ const TabBar = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarButton: props => <CustomTabBarButton {...props} onPress={() => {}} />,
+        tabBarButton: props => (
+          <CustomTabBarButton {...props} onPress={() => {}} />
+        ),
         tabBarIcon: ({focused}) => {
           let iconName;
 
@@ -26,7 +28,13 @@ const TabBar = () => {
             iconName = 'user';
           }
 
-          return <TabBarIcon iconName={iconName || ''} focused={focused} label = {route.name} />;
+          return (
+            <TabBarIcon
+              iconName={iconName || ''}
+              focused={focused}
+              label={route.name}
+            />
+          );
         },
         tabBarActiveTintColor: '#50C878',
         tabBarInactiveTintColor: '#E4EDE7',
