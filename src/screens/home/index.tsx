@@ -6,9 +6,8 @@ import {
   ScrollView,
   useWindowDimensions,
   ImageBackground,
-  TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React from 'react';
 import Header from './Header';
 import Detail from './Detail';
 import ProgressBox from './ProgressBox';

@@ -1,13 +1,23 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Text, StyleSheet, Animated} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Animated,
+  PanResponder,
+  GestureResponderEvent,
+  PanResponderGestureState,
+} from 'react-native';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 
 interface ProgressBarProps {
   data: string;
+  setData: (value: string) => void;
 }
 
-const Custom_ProgressBar: React.FC<ProgressBarProps> = ({data}) => {
+const Custom_ProgressBar: React.FC<ProgressBarProps> = ({data, setData}) => {
   const [progress, setProgress] = useState(0);
   const animatedProgress = useRef(new Animated.Value(0)).current;
+  const progressBarWidth = useRef(0);
 
   const maxValue = 2500;
   const minValue = 100;
@@ -36,14 +46,43 @@ const Custom_ProgressBar: React.FC<ProgressBarProps> = ({data}) => {
     }
 
     const range = maxValue - minValue;
-    const progressPercentage = ((newValue - 100) / range) * 100;
+    const progressPercentage = ((newValue - minValue) / range) * 100;
 
     return progressPercentage;
   };
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (
+        event: GestureResponderEvent,
+        gestureState: PanResponderGestureState,
+      ) => {
+        const x = gestureState.moveX;
+
+        const newProgress = (x / progressBarWidth.current) * 100;
+        if (newProgress >= 0 && newProgress <= 100) {
+          setProgress(newProgress);
+          animatedProgress.setValue(newProgress);
+
+          const newValue = Math.round(
+            minValue + (newProgress / 100) * (maxValue - minValue),
+          );
+          setData(newValue.toString());
+        }
+      },
+    }),
+  ).current;
+
   return (
     <View style={styles.container}>
-      <View style={styles.progressBarBackground}>
+      <View
+        style={styles.progressBarBackground}
+        onLayout={event => {
+          progressBarWidth.current = event.nativeEvent.layout.width;
+        }}>
+        <View style={styles.progressLine} />
+
         <Animated.View
           style={[
             styles.progressBar,
@@ -55,6 +94,21 @@ const Custom_ProgressBar: React.FC<ProgressBarProps> = ({data}) => {
             },
           ]}
         />
+
+        <Animated.View
+          style={[
+            styles.thumb,
+            {
+              left: animatedProgress.interpolate({
+                inputRange: [0, 100],
+                outputRange: ['0%', '100%'],
+              }),
+            },
+          ]}
+          {...panResponder.panHandlers}
+        >
+          <FontAwesome6 name="square" size={20} color="#4F94F0" />
+        </Animated.View>
       </View>
     </View>
   );
@@ -65,32 +119,44 @@ const styles = StyleSheet.create({
     margin: 20,
     alignItems: 'center',
   },
-  label: {
-    fontSize: 16,
-    marginBottom: 10,
+  progressBarBackground: {
+    height: 40,
+    width: '100%',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    borderRadius: 10,
+    overflow: 'hidden',
+    position: 'relative',
   },
+
+  progressLine: {
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    width: '100%',
+    position: 'absolute',
+    top: '50%',
+    transform: [{translateY: -0.5}],
+  },
+
   progressBar: {
-    height: '100%',
+    height: '50%',
     backgroundColor: '#2A0B37',
     borderRadius: 10,
   },
-  progress: {
+  thumb: {
+    position: 'absolute',
+    top: 0,
+    width: '13%',
     height: '100%',
-    borderRadius: 10,
-    backgroundColor: '#4caf50',
-  },
-
-  progressBarBackground: {
-    height: 20,
-    width: '100%',
-    backgroundColor: '#e0e0e0',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-
-  progressText: {
-    marginTop: 10,
-    fontSize: 16,
+    backgroundColor: '#fff',
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    transform: [{translateX: -10}],
   },
 });
 
